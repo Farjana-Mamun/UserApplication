@@ -1,0 +1,72 @@
+﻿@model IEnumerable<UserApplication.Areas.Administration.Models.UserModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container mt-5">
+    <div class="toolbar mb-3 d-flex gap-2">
+        <!-- Toolbar Buttons -->
+        <button class="btn btn-danger" id="block-btn" formaction="@Url.Action("BlockUsers", "UserModels")" form="userActionForm">
+            Block
+        </button>
+        <button class="btn btn-secondary" id="unblock-btn" formaction="@Url.Action("UnblockUsers", "UserModels")" form="userActionForm">
+            <i class="fas fa-unlock"></i> <!-- Unblock Icon (FontAwesome) -->
+        </button>
+        <button class="btn btn-danger" id="delete-btn" formaction="@Url.Action("DeleteUsers", "UserModels")" form="userActionForm">
+            <i class="fas fa-trash"></i> <!-- Delete Icon (FontAwesome) -->
+        </button>
+    </div>
+
+    <form id="userActionForm" method="post">
+        @Html.AntiForgeryToken()
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th><input type="checkbox" id="select-all" /></th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Last Login</th>
+                    <th>Registration Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td><input type="checkbox" class="user-select" name="userIds" value="@user.Id" /></td>
+                        <td>@user.Id</td>
+                        <td>@user.Name</td>
+                        <td>@user.Email</td>
+                        <td>@user.LastLogin?.ToString("g")</td>
+                        <td>@user.RegistrationTime.ToString("g")</td>
+                        <td>
+                            @if (user.Status == "Active")
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Blocked</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<script>
+    // Select/Deselect all checkboxes
+    document.getElementById('select-all').addEventListener('click', function () {
+        var checkboxes = document.querySelectorAll('.user-select');
+        for (var checkbox of checkboxes) {
+            checkbox.checked = this.checked;
+        }
+    });
+</script>
+
+
+
